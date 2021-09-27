@@ -1,0 +1,131 @@
+<html>
+
+<head>
+  <title>INFO 3300 - Project 1</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <style>
+    .gridlines line {
+      stroke: #bbb;
+    }
+
+    .gridlines .domain {
+      stroke: none;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container larger">
+
+    <h1> Info 3300: Project 1 </h1>
+    <p> Our dataset is sourced from <a href="https://www.kaggle.com/umeshkumar017/vaccination-data">Kaggle</a>.</p>
+
+    <p> Pie chart of cumulative vaccination responsibility </p>
+    <svg id="svg1" width=600 height=600 style="margin: 30px;">
+    </svg>
+
+    <p> The chart below shows the number of types of vaccine used compared to the vaccination rate per 100 people. Marks, denoted by circles, are colored by WHO region. </p>
+    <svg id="svg2" width=500 height=500 style="margin: 30px;">
+    </svg>
+
+    <p> Date of first vaccination vs vaccination rate by WHO region</p>
+    <svg id="svg3" width=600 height=600 style="margin: 30px;">
+    </svg>
+
+
+    <script>
+
+      d3.csv('data/cleaned_vaccine.csv', d3.autoType).then((data) => {
+        console.log(data);
+
+        let colors = {
+          "EURO": "#feda75",
+          "AMRO": "#fa7e1e",
+          "AFRO": "#fa7e1e",
+          "WPRO": "#962fbf",
+          "EMRO": "#4f5bd5",
+          "SEARO": "#38B55B"
+        };
+        const colorByWhoRegionScale = (r) => { return colors[r]; }
+
+        // Quinn ------------------------------------------------------------
+        let svg = d3.select("svg#svg1");
+        let margin = { top: 5, left: 5, bottom: 5, right: 5 };
+        let chartWidth = svg.attr('width') - margin.left - margin.right;
+        let chartHeight = svg.attr('height') - margin.top - margin.bottom;
+        let chartArea = svg.append('g')
+          .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        // Jackie ------------------------------------------------------------
+        svg = d3.select("svg#svg2");
+        margin = { top: 40, left: 40, bottom: 40, right: 10 };
+        chartWidth = svg.attr('width') - margin.left - margin.right;
+        chartHeight = svg.attr('height') - margin.top - margin.bottom;
+        chartArea = svg.append('g')
+          .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        const numVaxTypesUsedMax = d3.max(data, d => d['NUMBER_VACCINES_TYPES_USED']);
+        const numVaxTypesUsedScale = d3.scaleLinear().domain([0, numVaxTypesUsedMax]).range([0, chartWidth]);
+
+        const totalVaxPer100Max = d3.max(data, d => d['TOTAL_VACCINATIONS_PER100']);
+        const totalVaxPer100Scale = d3.scaleLinear().domain([0, totalVaxPer100Max]).range([chartHeight, 0]);
+
+        let svg2leftGridlines = d3.axisLeft(totalVaxPer100Scale)
+          .tickSize(-chartWidth - 10);
+        svg.append('g')
+          .attr("class", "y gridlines")
+          .attr('transform', `translate(${margin.left},${margin.top})`)
+          .call(svg2leftGridlines);
+
+        let svg2botGridlines = d3.axisBottom(numVaxTypesUsedScale)
+          .tickSize(-chartHeight - 10);
+        svg.append('g')
+          .attr("class", "x gridlines")
+          .attr('transform', `translate(${margin.left},${margin.top + chartHeight})`)
+          .call(svg2botGridlines);
+
+        // X axis label:
+        svg.append("text")
+          .attr("text-anchor", "middle")
+          .attr("x", margin.left + chartWidth / 2)
+          .attr("y", chartHeight + margin.top + 30)
+          .text("Number of Vaccine Types");
+
+        // Y axis label:
+        svg.append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 15)
+          .attr("x", -margin.left - chartWidth/2)
+          .text("Vaccine Rate (Per 100)")
+
+        chartArea.raise();
+
+        data.forEach((d, i) => {
+          chartArea.append('circle')
+            .attr('cx', numVaxTypesUsedScale(d['NUMBER_VACCINES_TYPES_USED']))
+            .attr('cy', totalVaxPer100Scale(d['TOTAL_VACCINATIONS_PER100']))
+            .attr('r', 5)
+            .style('opacity', 0.8)
+            .style('fill', colorByWhoRegionScale(d['WHO_REGION']))
+        });
+
+        // Caroline ------------------------------------------------------------
+        svg = d3.select("svg#svg3");
+        margin = { top: 5, left: 5, bottom: 5, right: 5 };
+        chartWidth = svg.attr('width') - margin.left - margin.right;
+        chartHeight = svg.attr('height') - margin.top - margin.bottom;
+        chartArea = svg.append('g')
+          .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+
+      }); // end csv promise
+
+    </script>
+
+  </div>
+</body>
+
+</html>
