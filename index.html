@@ -23,16 +23,16 @@
     <p> Our dataset is sourced from <a href="https://www.kaggle.com/umeshkumar017/vaccination-data">Kaggle</a>.</p>
 
     <p> Pie chart of cumulative vaccination responsibility </p>
-    <svg id="svg1" width=600 height=600 style="margin: 30px;">
-    </svg>
+    <div><svg id="svg1" width=500 height=500 style="margin: 30px;">
+    </svg><svg id='legend1' width=100 height=400 style="margin-bottom:80;"></svg></div>
 
     <p> The chart below shows the number of types of vaccine used compared to the vaccination rate per 100 people. Marks, denoted by circles, are colored by WHO region. </p>
-    <svg id="svg2" width=500 height=500 style="margin: 30px;">
-    </svg>
+    <div><svg id="svg2" width=500 height=500 style="margin: 30px;">
+    </svg><svg id='legend2' width=100 height=400 style="margin-bottom:80;"></svg></div>
 
     <p> Date of first vaccination vs vaccination rate by WHO region</p>
-    <svg id="svg3" width=600 height=600 style="margin: 30px;">
-    </svg>
+    <div><svg id="svg3" width=500 height=500 style="margin: 30px;"></svg>
+      <svg id='legend3' width=100 height=400 style="margin-bottom:80;"></svg></div>
 
 
     <script>
@@ -43,12 +43,16 @@
         let colors = {
           "EURO": "#feda75",
           "AMRO": "#fa7e1e",
-          "AFRO": "#fa7e1e",
+          "AFRO": "#d62976",
           "WPRO": "#962fbf",
           "EMRO": "#4f5bd5",
           "SEARO": "#38B55B"
         };
+        let who = ["EURO","AMRO","AFRO","WPRO","EMRO","SEARO"];
         const colorByWhoRegionScale = (r) => { return colors[r]; }
+        
+
+        
 
         // Quinn ------------------------------------------------------------
         let svg = d3.select("svg#svg1");
@@ -58,6 +62,25 @@
         let chartArea = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+        //Add legends
+        svg = d3.select("svg#legend1");
+        who.forEach((d, i) => {
+          svg.append("rect")
+          .attr("x", 25)
+          .attr("y", 100 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .style("fill", colorByWhoRegionScale(d))
+        });
+        who.forEach((d, i) => {
+          svg.append("text")
+          .attr("x", 50)
+          .attr("y", 115 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .text(d)
+        });
+
         // Jackie ------------------------------------------------------------
         svg = d3.select("svg#svg2");
         margin = { top: 40, left: 40, bottom: 40, right: 10 };
@@ -65,6 +88,7 @@
         chartHeight = svg.attr('height') - margin.top - margin.bottom;
         chartArea = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
+          
 
         const numVaxTypesUsedMax = d3.max(data, d => d['NUMBER_VACCINES_TYPES_USED']);
         const numVaxTypesUsedScale = d3.scaleLinear().domain([0, numVaxTypesUsedMax]).range([0, chartWidth]);
@@ -102,6 +126,7 @@
           .text("Vaccine Rate (Per 100)")
 
         chartArea.raise();
+        
 
         data.forEach((d, i) => {
           chartArea.append('circle')
@@ -112,6 +137,25 @@
             .style('fill', colorByWhoRegionScale(d['WHO_REGION']))
         });
 
+        //Add legends
+        svg = d3.select("svg#legend2");
+        who.forEach((d, i) => {
+          svg.append("rect")
+          .attr("x", 25)
+          .attr("y", 100 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .style("fill", colorByWhoRegionScale(d))
+        });
+        who.forEach((d, i) => {
+          svg.append("text")
+          .attr("x", 50)
+          .attr("y", 115 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .text(d)
+        });
+
         // Caroline ------------------------------------------------------------
         svg = d3.select("svg#svg3");
         margin = { top: 5, left: 5, bottom: 5, right: 5 };
@@ -119,6 +163,26 @@
         chartHeight = svg.attr('height') - margin.top - margin.bottom;
         chartArea = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+
+        //add legends
+        svg = d3.select("svg#legend3");
+        who.forEach((d, i) => {
+          svg.append("rect")
+          .attr("x", 25)
+          .attr("y", 100 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .style("fill", colorByWhoRegionScale(d))
+        });
+        who.forEach((d, i) => {
+          svg.append("text")
+          .attr("x", 50)
+          .attr("y", 115 + 35 * i)
+          .attr("width", 20)
+          .attr("height", 20)
+          .text(d)
+        });
 
 
       }); // end csv promise
