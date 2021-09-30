@@ -199,6 +199,23 @@
                  .attr("cy", d => totalVaxPer100Scale(d['TOTAL_VACCINATIONS_PER100']))
                  .attr("opacity", ".7");
 
+
+        // X axis label:
+        svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", margin.left + chartWidth / 2)
+        .attr("y", chartHeight + margin.top + 30)
+        .text("Date of First Vaccination");
+
+        // Y axis label:
+        svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 15)
+        .attr("x", -margin.left - chartWidth/2)
+        .text("Vaccine Rate (Per 100)")
+
+        chartArea.raise();
         //add legends
         svg = d3.select("svg#legend3");
         who.forEach((d, i) => {
