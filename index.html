@@ -50,9 +50,9 @@
         };
         let who = ["EURO","AMRO","AFRO","WPRO","EMRO","SEARO"];
         const colorByWhoRegionScale = (r) => { return colors[r]; }
-        
 
-        
+
+
 
         // Quinn ------------------------------------------------------------
         let svg = d3.select("svg#svg1");
@@ -88,7 +88,7 @@
         chartHeight = svg.attr('height') - margin.top - margin.bottom;
         chartArea = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
-          
+
 
         const numVaxTypesUsedMax = d3.max(data, d => d['NUMBER_VACCINES_TYPES_USED']);
         const numVaxTypesUsedScale = d3.scaleLinear().domain([0, numVaxTypesUsedMax]).range([0, chartWidth]);
@@ -126,7 +126,7 @@
           .text("Vaccine Rate (Per 100)")
 
         chartArea.raise();
-        
+
 
         data.forEach((d, i) => {
           chartArea.append('circle')
@@ -158,12 +158,46 @@
 
         // Caroline ------------------------------------------------------------
         svg = d3.select("svg#svg3");
-        margin = { top: 5, left: 5, bottom: 5, right: 5 };
+        // Reusing Jackie's margins
+        // margin = { top: 40, left: 40, bottom: 40, right: 10 };
         chartWidth = svg.attr('width') - margin.left - margin.right;
         chartHeight = svg.attr('height') - margin.top - margin.bottom;
         chartArea = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+        const timeParser = d3.timeParse('%m/%d/%Y');
+        data.forEach( (d, i) => {
+          d['date'] = timeParser(d["FIRST_VACCINE_DATE"]);
+          var actualYear = d['date'].getYear() + 1900 + 2000;
+          d['date'].setYear(actualYear);
+        });
+
+        // Reusing Jackie's totalVaxPer100Scale for the y-axis
+
+        const dateExtent = d3.extent(data, d => d['date']);
+        const dateScale = d3.scaleTime().domain(dateExtent).range([0,chartWidth]);
+
+        let svg3leftGridlines = d3.axisLeft(totalVaxPer100Scale)
+          .tickSize(-chartWidth - 10);
+        svg.append('g')
+          .attr("class", "y gridlines")
+          .attr('transform', `translate(${margin.left},${margin.top})`)
+          .call(svg3leftGridlines);
+
+        let svg3botGridlines = d3.axisBottom(dateScale)
+          .tickSize(-chartHeight - 10);
+        svg.append('g')
+          .attr("class", "x gridlines")
+          .attr('transform', `translate(${margin.left},${margin.top + chartHeight})`)
+          .call(svg3botGridlines);
+
+        chartArea.selectAll("circle").data(data)
+                 .join("circle")
+                 .attr("r", 3)
+                 .attr("fill", d => colorByWhoRegionScale(d["WHO_REGION"]))
+                 .attr("cx", d => dateScale(d['date']) )
+                 .attr("cy", d => totalVaxPer100Scale(d['TOTAL_VACCINATIONS_PER100']))
+                 .attr("opacity", ".7");
 
         //add legends
         svg = d3.select("svg#legend3");
