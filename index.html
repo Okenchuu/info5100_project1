@@ -185,7 +185,9 @@
           .call(svg3leftGridlines);
 
         let svg3botGridlines = d3.axisBottom(dateScale)
-          .tickSize(-chartHeight - 10);
+          .tickSize(-chartHeight - 10)
+				  .tickFormat(d3.timeFormat("%b %Y"));
+
         svg.append('g')
           .attr("class", "x gridlines")
           .attr('transform', `translate(${margin.left},${margin.top + chartHeight})`)
@@ -198,6 +200,7 @@
                  .attr("cx", d => dateScale(d['date']) )
                  .attr("cy", d => totalVaxPer100Scale(d['TOTAL_VACCINATIONS_PER100']))
                  .attr("opacity", ".7");
+
 
 
         // X axis label:
