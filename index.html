@@ -63,8 +63,10 @@
           .attr('transform', `translate(${margin.left}, ${margin.top})`)
           .attr("transform", "translate(" + chartWidth / 2 + "," + chartHeight / 2 + ")");
 
-
+        // create a pie chart color scale
         const pieColor = d3.scaleOrdinal(['#d62976', '#fa7e1e', '#4f5bd5', '#feda75', '#38B55B', '#962fbf']);
+        
+        // create a pie chart
         const pie = d3.pie()
           .value(d => d.TOTAL_VACCINATIONS)
           (data);
@@ -85,19 +87,20 @@
           })
           .attr("d", arc);
         
+        // calculte the sum of data and the percentage of each data
         const total = d3.sum(data, function(d) {
           return d.TOTAL_VACCINATIONS;
         });
 
         data.forEach(function(d) {
           d.percentage = Math.round(d.TOTAL_VACCINATIONS / total * 100);
-          console.log(d.percentage);
         });
 
+        // append percentage to each pie slice 
         arcs.append("text")
           .attr("transform", function (d, i) {
             const position = arc.centroid(d);
-            position[0] *= 2.1;
+            position[0] *= 2.2;
             position[1] *= 2.1;	
             return "translate(" + position + ")";
           })
