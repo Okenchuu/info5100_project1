@@ -87,7 +87,7 @@
           })
           .attr("d", arc);
         
-        // calculte the sum of data and the percentage of each data
+        // calculate the sum of data and the percentage of each data
         const total = d3.sum(data, function(d) {
           return d.TOTAL_VACCINATIONS;
         });
@@ -96,7 +96,7 @@
           d.percentage = Math.round(d.TOTAL_VACCINATIONS / total * 100);
         });
 
-        // append percentage to each pie slice 
+        // append percentage number to each pie slice 
         arcs.append("text")
           .attr("transform", function (d, i) {
             const position = arc.centroid(d);
