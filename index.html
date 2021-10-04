@@ -24,7 +24,7 @@
 
     <p> Pie chart of cumulative vaccination responsibility of each WHO region.</p>
     <div><svg id="svg1" width=500 height=500 style="margin: 30px;">
-      </svg><svg id='legend1' width=100 height=400 style="margin-bottom:80;"></svg></div>
+      </svg><svg id='legend1' width=200 height=400 style="margin-bottom:80;"></svg></div>
 
     <p> The chart below shows the number of types of vaccine used compared to the vaccination rate per 100 people. The
       vaccination rate per 100 people can be larger than 100 because some vaccines require multiple doses. Marks,
@@ -55,7 +55,7 @@
 
         // Quinn ------------------------------------------------------------
         let svg = d3.select("svg#svg1");
-        let margin = { top: 5, left: 5, bottom: 5, right: 5 };
+        let margin = { top: 30, left: 20, bottom: 5, right:50 };
         let chartWidth = svg.attr('width') - margin.left - margin.right;
         let chartHeight = svg.attr('height') - margin.top - margin.bottom;
         let radius = chartWidth / 2;
@@ -84,6 +84,26 @@
             return pieColor(i);
           })
           .attr("d", arc);
+        
+        const total = d3.sum(data, function(d) {
+          return d.TOTAL_VACCINATIONS;
+        });
+
+        data.forEach(function(d) {
+          d.percentage = Math.round(d.TOTAL_VACCINATIONS / total * 100);
+          console.log(d.percentage);
+        });
+
+        arcs.append("text")
+          .attr("transform", function (d, i) {
+            const position = arc.centroid(d);
+            position[0] *= 2.1;
+            position[1] *= 2.1;	
+            return "translate(" + position + ")";
+          })
+          .attr("dy", "0.3em")
+          .style("text-anchor", "middle")
+          .text(d => `${d.data.percentage}` + '%');
 
         //Add legends
         svg = d3.select("svg#legend1");
