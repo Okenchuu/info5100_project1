@@ -24,7 +24,7 @@
 
     <p> Pie chart of cumulative vaccination responsibility of each WHO region.</p>
     <div><svg id="svg1" width=500 height=500 style="margin: 30px;">
-      </svg><svg id='legend1' width=200 height=400 style="margin-bottom:80;"></svg></div>
+      </svg><svg id='legend1' width=400 height=400 style="margin-bottom:80;"></svg></div>
 
     <p> The chart below shows the number of types of vaccine used in each country compared to the vaccination rate per 100 people in the corresponding country. The
       vaccination rate per 100 people can be larger than 100 because some vaccines require multiple doses. Marks,
@@ -51,6 +51,8 @@
           "SEARO": "#38B55B"
         };
         let who = ["EURO", "AMRO", "AFRO", "WPRO", "EMRO", "SEARO"];
+        let who_full = [ "African Region (AFR)", "Region of the Americas (AMR)", "South-East Asian Region (SEAR)"
+                  , "European Region (EUR)", "Eastern Mediterranean Region (EMR)", "Western Pacific Region (WPR)"]
         const colorByWhoRegionScale = (r) => { return colors[r]; }
 
         // Quinn ------------------------------------------------------------
@@ -112,18 +114,19 @@
         svg = d3.select("svg#legend1");
         who.forEach((d, i) => {
           svg.append("rect")
-            .attr("x", 25)
+            .attr("x", 5)
             .attr("y", 100 + 35 * i)
             .attr("width", 20)
             .attr("height", 20)
             .style("fill", colorByWhoRegionScale(d))
         });
-        who.forEach((d, i) => {
+        who_full.forEach((d, i) => {
           svg.append("text")
-            .attr("x", 50)
+            .attr("x", 30)
             .attr("y", 115 + 35 * i)
             .attr("width", 20)
             .attr("height", 20)
+            .style("font-size", "15px")
             .text(d)
         });
       });
