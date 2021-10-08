@@ -51,8 +51,10 @@
           "SEARO": "#38B55B"
         };
         let who = ["EURO", "AMRO", "AFRO", "WPRO", "EMRO", "SEARO"];
-        let who_full = [ "African Region (AFR)", "Region of the Americas (AMR)", "South-East Asian Region (SEAR)"
-                  , "European Region (EUR)", "Eastern Mediterranean Region (EMR)", "Western Pacific Region (WPR)"]
+        let who_full = [ "European Region (EURO)", "Region of the Americas (AMRO)",
+                         "African Region (AFRO)", "Western Pacific Region (WPRO)",
+                         "Eastern Mediterranean Region (EMRO)", "South-East Asian Region (SEARO)"
+                       ]
         const colorByWhoRegionScale = (r) => { return colors[r]; }
 
         // Quinn ------------------------------------------------------------
@@ -67,7 +69,7 @@
 
         // create a pie chart color scale
         const pieColor = d3.scaleOrdinal(['#d62976', '#fa7e1e', '#4f5bd5', '#feda75', '#38B55B', '#962fbf']);
-        
+
         // create a pie chart
         const pie = d3.pie()
           .value(d => d.TOTAL_VACCINATIONS)
@@ -88,7 +90,7 @@
             return pieColor(i);
           })
           .attr("d", arc);
-        
+
         // calculate the sum of data and the percentage of each data
         const total = d3.sum(data, function(d) {
           return d.TOTAL_VACCINATIONS;
@@ -98,12 +100,12 @@
           d.percentage = Math.round(d.TOTAL_VACCINATIONS / total * 100);
         });
 
-        // append percentage number to each pie slice 
+        // append percentage number to each pie slice
         arcs.append("text")
           .attr("transform", function (d, i) {
             const position = arc.centroid(d);
             position[0] *= 2.13;
-            position[1] *= 2.1;	
+            position[1] *= 2.1;
             return "translate(" + position + ")";
           })
           .attr("dy", "0.3em")
